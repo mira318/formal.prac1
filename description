@@ -1,0 +1,103 @@
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\usepackage{mathtools}
+\usepackage{exercise}
+ 
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[english, russian]{babel}
+\usepackage{hyperref}
+
+\pagenumbering{gobble} 
+ 
+\newcommand{\N}{\math6=хзжщдшлгонрепкаувцыйф	bb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\theoremstyle{definition}
+
+\newtheorem{task}{Задача}
+\newtheorem{Lem}{Лемма}
+\newtheorem{Def}{Определение}
+\newtheorem{Th}{Теорема}
+\newtheorem{Seq}{Следствие}
+
+ 
+\newenvironment{theorem}[2][Теорема]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Задача]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+ 
+ 
+\def\eps{\varepsilon}
+\def\T{{\cal T}}
+\def\H{{\cal H}}
+\def\K{{\cal K}}
+\def\L{{\cal L}}
+\def\F{{\cal F}}
+\def\Q{{\cal Q}}
+\def\N{{\cal N}}
+\def\p{{\cal P}}
+\def\np{{\cal NP}}
+\def\A{{\cal A}}
+\def\B{{\cal B}}
+\def\D{{\cal D}}
+\def\BB{{\cal B}^* }
+\def\DD{{\cal D}^* }
+\def\TT{\tilde{\cal T}}
+\def\f{\tilde f}
+\def\ind{\mathop{\rm index}}
+\def\St{\mathop{\rm St}}
+\let\bd\partial
+\def\V{\ensuremath{{\cal V}}}
+\def\SS{{\mathbb S}}
+\def\RR{\mathbb R}
+\def\QQ{\mathbb Q}
+\def\PP{\mathbb P}
+\def\R{\cal R}
+\def\NN{\mathbb N}
+\def\CC{\mathbb C}
+\def\ZZ{\mathbb Z}
+\def\s{\sigma}
+\def\S{\Sigma }
+\def\ss{\Sigma^* }
+\def\ra{\rightarrow}
+\def\da{\downarrow}
+\def\Ra{\Rightarrow}
+\def\t{\theta}
+\def\l{\lambda}
+\def\FF{{\mathbb F}}
+
+\begin{document}
+\begin{center}
+\begin{Huge}
+Описание алгоритма\\
+\end{Huge}
+\end{center}
+Будем поддерживать ответ для каждого элемента стека, образующегося при разборе выражения в обратной польской записи и для каждого возможного значения $ l $.\\
+Остатков по модулю $ k $ всего $ k $. Будем для каждого объекта в стеке хранить массив $ possible $(реализовано через vector) из $ k $ элементов. Если из данного регулярного выражения можно получить слово длины $ n $, где $ n \mod  k = l $, и $ n $ минимально, то $ possible[l] = n $, если такого $ n $ не существует, то $ possible[l] = -1 $. Тогда ответ на задачу $ = possible[l] $ для заданного в условии $ l $, если он существует, и $ = INF $, если $ possible[l] = -1 $. Осталось научиться поддерживать $ possible $.\\
+Для этого надо при добавлении буквы, завести для неё массив $ -1 \; 1 \; -1 \; -1 \dots $, при добавлении $ \varepsilon $ завести для него массив $ 0 \; -1 \; -1 \; -1 \dots $.\\  
+При конкатенации 2-х выражений новое выражение может иметь длину $ = \forall $ возможной сумме длин конкатенируемых выражений $ \Rightarrow $ используем декартово произведение и возьмём минимум.\\
+При логическом или (сложении) 2-х выражений новое выражение может иметь длину $ = $ длине $ \forall $ из старых выражений $ \Rightarrow $ возьмём минимум из возможных 2-х.\\
+При возведении в степень $ * $ будем умножать все возможные длины старого выражения на $ 0, 1, 2 \dots k - 1$ обновлять и брать минимум, где необходимо.\\
+
+Докажем корректность: по индукции покажем, что массив для каждой части выражения удовлетворяет описанным свойствам после каждого шага.\\
+База: для всех регулярных выражений длины $ 1 $ массив $ possible $ построен верно: из буквы можно получить только букву длины $ 1 $, из $ \varepsilon $ можно получить только пустое слово длины $ 0 $.
+Переход: пусть до некоторой длины $ m $ массивы $ possible $, для регулярных выражений, в которых $ \leqslant m$ символов построены верно. Тогда выражения большей длины могут быть получены 3-мя способами:\\
+Конкатенация: тогда если возможные длины старых выражений были $ a_1, a_2 \dots $ и $ b_1, b_2 \dots $, то новое выражение может иметь длину $a_1 + b_1, a_1 + b_2 \dots a_2 + b_1 \dots \Rightarrow$ сложим все возможные пары за $ O(k^2) $. Заметим, что если какая-то длина по $ mod \; k $ получилась 2 и более раз, то более длинные случаи можно не учитывать: если в слове заменить их на более короткие, то значения длины по $ mod \; k $ не изменится, а значение без модуля увеличится, мы же хотим минимизировать значение без модуля при фиксированном значении с модулем.\\
+Сложение: тогда если возможные длины старых выражений были $ a_1, a_2 \dots $ и $ b_1, b_2 \dots $, то новое выражение может иметь длину $a_1, b_1, a_2, b_2 \dots \Rightarrow$ будем перебирать длину нового выражения за $ O(k) $ и проверять, есть ли она среди длин старых выражений. Заметим, что если какая-то длина по $ mod \; k $ получилась 2 и более раз, то более длинные случаи можно не учитывать: если в слове заменить их на более короткие, то значения длины по $ mod \; k $ не изменится, а значение без модуля увеличится, мы же хотим минимизировать значение без модуля при фиксированном значении с модулем.\\
+Возведение в степень: тогда если возможная длина старого выражения была $ a_1, a_2 \dots $, то новое выражение может иметь длину $0, a_1, 2 \cdot a_1 \dots, a_2, 2 \cdot a_2 \dots \Rightarrow$ будем перебирать длину старого выражения и множитель за $O(k^2) $. Дальше перебирать множитель не нужно т. к. $ a_i \cdot k = 0 \; mod \; k, a_i \cdot (k + 1) = a_i \; mod \; k \dots$ Заметим, что если какая-то длина по $ mod \; k $ получилась 2 и более раз, то более длинные случаи можно не учитывать: если в слове заменить их на более короткие, то значения длины по $ mod \; k $ не изменится, а значение без модуля увеличится, мы же хотим минимизировать значение без модуля при фиксированном значении с модулем.\\
+Остальные действия над стеком образуют новые части регулярных выражений длины $ 1 $ или $ 0 \Rightarrow$ их можно считать разобранными в базе.\\
+Итак, переход доказан, алгоритм поддерживает указанный инвариант. При длине части регулярного выражения равной длине всего регулярного выражения мы получим ответ на задачу.\\ 
+Асимптотика:\\
+$O(k^2 \cdot |\alpha|)$ по времени\\
+$O(k^2 \cdot |\alpha|)$ по памяти\\
+\end{document}
