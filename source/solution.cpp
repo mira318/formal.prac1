@@ -8,25 +8,26 @@ struct Reg_part
     std::vector<int> possible;
     Reg_part(size_t k)
     {
-        std::vector<int> possible_1(k, -1);
-        possible = possible_1;
-
+        possible.assign(k, -1);
     }
     ~Reg_part()
     {
         possible.clear();
     }
 };
+
 bool check(size_t need_size, std::stack<Reg_part>& current_reg)
 {
     return current_reg.size() < need_size ? 0 : 1;
 }
+
 void put_letter(std::stack<Reg_part>& current_reg, size_t k)
 {
     Reg_part part_to_add(k);
     part_to_add.possible[1] = 1;
     current_reg.push(part_to_add);
 }
+
 bool put_plus(std::stack<Reg_part>& current_reg, size_t k)
 {
     Reg_part first_from_stack(k);
@@ -64,6 +65,7 @@ bool put_plus(std::stack<Reg_part>& current_reg, size_t k)
     current_reg.push(part_to_add);
     return 1;
 }
+
 bool put_point(std::stack<Reg_part>& current_reg, size_t k)
 {
     Reg_part first_from_stack(k);
@@ -84,7 +86,7 @@ bool put_point(std::stack<Reg_part>& current_reg, size_t k)
             for(size_t j = 0; j < k; ++j)
             {
                 if(second_from_stack.possible[j] != -1 && (part_to_add.possible[(j + i) % k] == -1 ||
-                                part_to_add.possible[(j + i) % k] > first_from_stack.possible[i] + second_from_stack.possible[j]))
+                	part_to_add.possible[(j + i) % k] > first_from_stack.possible[i] + second_from_stack.possible[j]))
                 {
                     part_to_add.possible[(j + i) % k] = first_from_stack.possible[i] + second_from_stack.possible[j];
                 }
@@ -94,6 +96,7 @@ bool put_point(std::stack<Reg_part>& current_reg, size_t k)
     current_reg.push(part_to_add);
     return 1;
 }
+
 bool put_star(std::stack<Reg_part>& current_reg, size_t k)
 {
     Reg_part first_from_stack(k);
@@ -112,7 +115,7 @@ bool put_star(std::stack<Reg_part>& current_reg, size_t k)
             for(size_t j = 0; j < k; ++j)
             {
                 if(part_to_add.possible[(j * first_from_stack.possible[i]) % k] == -1 ||
-                                part_to_add.possible[(j * first_from_stack.possible[i]) % k] > first_from_stack.possible[i] * j)
+                	part_to_add.possible[(j * first_from_stack.possible[i]) % k] > first_from_stack.possible[i] * j)
                 {
                     part_to_add.possible[(j * first_from_stack.possible[i]) % k] = first_from_stack.possible[i] * j;
                 }
@@ -122,12 +125,14 @@ bool put_star(std::stack<Reg_part>& current_reg, size_t k)
     current_reg.push(part_to_add);
     return 1;
 }
+
 void put_eps(std::stack<Reg_part>& current_reg, int k)
 {
     Reg_part part_to_add(k);
     part_to_add.possible[0] = 0;
     current_reg.push(part_to_add);
 }
+
 std::string sol(std::string input_string, size_t k, size_t l)
 {
     if(l >= k)
