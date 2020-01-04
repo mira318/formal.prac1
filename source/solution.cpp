@@ -34,9 +34,9 @@ bool put_plus(std::stack<Reg_part>& current_reg, size_t k)
     Reg_part second_from_stack(k);
     Reg_part part_to_add(k);
     if(!check(2, current_reg))
-	{
+    {
     	return 0;
-	}
+    }
     first_from_stack = current_reg.top();
     current_reg.pop();
     second_from_stack = current_reg.top();
