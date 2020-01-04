@@ -72,9 +72,9 @@ bool put_point(std::stack<Reg_part>& current_reg, size_t k)
     Reg_part second_from_stack(k);
     Reg_part part_to_add(k);
     if(!check(2, current_reg))
-	{
+    {
     	return 0;
-	}
+    }
     first_from_stack = current_reg.top();
     current_reg.pop();
     second_from_stack = current_reg.top();
@@ -102,9 +102,9 @@ bool put_star(std::stack<Reg_part>& current_reg, size_t k)
     Reg_part first_from_stack(k);
     Reg_part part_to_add(k);
     if(!check(1, current_reg))
-	{
+    {
     	return 0;
-	}
+    }
     first_from_stack = current_reg.top();
     current_reg.pop();
     part_to_add.possible[0] = 0;
@@ -136,9 +136,9 @@ void put_eps(std::stack<Reg_part>& current_reg, int k)
 std::string sol(std::string input_string, size_t k, size_t l)
 {
     if(l >= k)
-	{
-		return "ERROR";
-	}
+    {
+	return "ERROR";
+    }
     std::stack<Reg_part> current_reg;
 	for(size_t i = 0; i < input_string.size(); ++i)
     {
@@ -152,35 +152,35 @@ std::string sol(std::string input_string, size_t k, size_t l)
             {
                 case '+':
                     if(!put_plus(current_reg, k))
-					{
+		    {
                     	return "ERROR";
-					}
+		    }
                     break;
                 case '.':
                     if(!put_point(current_reg, k))
-					{
+		    {
                     	return "ERROR";
-					}
+		    }
                     break;
                 case '*':
                     if(!put_star(current_reg, k))
-					{
+		    {
                     	return "ERROR";
-					}
+		    }
                     break;
                 case '1':
                     put_eps(current_reg, k);
                     break;
                 default:
-					return "ERROR";
+			return "ERROR";
                     break;
             }
         }
     }
     if(current_reg.size() != 1)
-	{
+    {
     	return "ERROR";
-	}
+    }
     Reg_part ans(k);
     ans = current_reg.top();
     if(ans.possible[l] == -1)
